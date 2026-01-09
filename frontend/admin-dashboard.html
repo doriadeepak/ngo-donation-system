@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Admin Dashboard | NGO CARE</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/app.js"></script>
+</head>
+
+<body onload="loadAdminStats(); loadAdminCharts();">
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="logo">NGO CARE</div>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div class="section">
+    <div class="container">
+      <h2 class="center">Admin Dashboard</h2>
+      <p class="center" style="color: var(--muted); margin-bottom: 50px;">
+        Manage users, monitor donations, and track impact.
+      </p>
+
+      <!-- STATS -->
+      <div
+        style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; margin-bottom: 50px;">
+
+        <div class="card center">
+          <h3>Total Users</h3>
+          <p id="totalUsers" style="font-size: 32px; font-weight: 700; color: var(--primary);">
+            —
+          </p>
+
+          <p style="color: var(--muted); font-size: 14px;">
+            Registered donors & volunteers
+          </p>
+        </div>
+
+        <div class="card center">
+          <h3>Total Donations</h3>
+          <p id="totalDonations" style="font-size: 32px; font-weight: 700; color: var(--primary);">
+            —
+          </p>
+
+          <p style="color: var(--muted); font-size: 14px;">
+            All donation attempts
+          </p>
+        </div>
+
+        <div class="card center">
+          <h3>Funds Raised</h3>
+          <p id="totalAmount" style="font-size: 32px; font-weight: 700; color: var(--primary);">
+            —
+          </p>
+
+          <p style="color: var(--muted); font-size: 14px;">
+            Successful donations
+          </p>
+        </div>
+
+      </div>
+
+      <!-- CHARTS -->
+      <div
+        style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:30px; margin-bottom:50px;">
+
+        <div class="card">
+          <h3 class="center">Donation Status Distribution</h3>
+          <canvas id="statusChart"></canvas>
+        </div>
+
+        <div class="card">
+          <h3 class="center">Funds by Status</h3>
+          <canvas id="amountChart"></canvas>
+        </div>
+
+      </div>
+
+      <!-- ADMIN ACTIONS -->
+      <div class="card center">
+        <h3>Administrative Actions</h3>
+        <p style="color: var(--muted); margin-bottom: 20px;">
+          Advanced management features can be accessed via backend APIs.
+        </p>
+
+        <div style="display:flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
+          <button class="btn outline" onclick="location.href='admin-users.html'">
+            View Users
+          </button>
+
+          <button class="btn outline" onclick="location.href='admin-donations.html'">
+            View Donations
+          </button>
+
+          <button class="btn outline" onclick="location.href='admin-reports.html'">
+            View Reports
+          </button>
+
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+
+</html>

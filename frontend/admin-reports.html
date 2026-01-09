@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Reports | NGO CARE</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js"></script>
+</head>
+
+<body onload="loadAdminReports()">
+
+    <div class="navbar">
+        <div class="logo">NGO CARE</div>
+        <div>
+            <a href="admin-dashboard.html">Dashboard</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="container">
+            <h2 class="center">System Reports</h2>
+            <p class="center" style="color: var(--muted); margin-bottom: 40px;">
+                Summary report generated from system records
+            </p>
+
+            <div class="card">
+                <p><b>Total Registered Users:</b> <span id="rUsers">—</span></p>
+                <p><b>Total Donation Attempts:</b> <span id="rDonations">—</span></p>
+
+                <hr style="margin:15px 0">
+
+                <p><b>Successfully Received Funds:</b> ₹ <span id="rSuccess">—</span></p>
+                <p><b>Pending Funds:</b> ₹ <span id="rPending">—</span></p>
+                <p><b>Failed Funds:</b> ₹ <span id="rFailed">—</span></p>
+
+                <hr style="margin:15px 0">
+
+                <p><b>Total Funds Recorded:</b> ₹ <span id="rAmount">—</span></p>
+
+
+                <hr style="margin:20px 0">
+
+                <p style="color: var(--muted);">
+                    Note: Donations remain pending until payment confirmation.
+                    This report reflects ethical handling of payment status.
+                </p>
+
+                <p style="margin-top:20px; font-size:14px; color: var(--muted);">
+                    Report generated on:
+                    <span id="rTime"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

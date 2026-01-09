@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Donation History | NGO CARE</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/app.js"></script>
+</head>
+<body onload="loadDonationHistory()">
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="logo">NGO CARE</div>
+  <div>
+    <a href="user-dashboard.html">Dashboard</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</div>
+
+<!-- HISTORY SECTION -->
+<div class="section">
+  <div class="container">
+    <h2 class="center">Your Donation History</h2>
+    <p class="center" style="color: var(--muted); margin-bottom: 40px;">
+      Below is a record of all your donation attempts.
+    </p>
+
+    <div id="historyContainer"
+         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px;">
+      <!-- Donation cards will be inserted here -->
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+:root {
+  --primary: #1f7a4d;
+  --secondary: #f4fdf8;
+  --dark: #1c1c1c;
+  --light: #ffffff;
+  --muted: #6b7280;
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, Arial, sans-serif;
+  background: var(--secondary);
+  color: var(--dark);
+}
+
+/* NAVBAR */
+.navbar {
+  position: sticky;
+  top: 0;
+  background: var(--light);
+  padding: 18px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 10;
+}
+
+.navbar .logo {
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--primary);
+}
+
+.navbar a {
+  text-decoration: none;
+  margin-left: 20px;
+  color: var(--dark);
+  font-weight: 500;
+}
+
+/* BUTTONS */
+.btn {
+  background: var(--primary);
+  color: white;
+  padding: 12px 22px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn.outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* CONTAINERS */
+.section {
+  padding: 80px 40px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* CARDS */
+.card {
+  background: var(--light);
+  border-radius: var(--radius);
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* FORMS */
+.form-card {
+  max-width: 420px;
+  margin: auto;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 15px;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* CENTER */
+.center {
+  text-align: center;
+}

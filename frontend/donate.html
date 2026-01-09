@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Donate | NGO CARE</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/app.js"></script>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="logo">NGO CARE</div>
+  <div>
+    <a href="user-dashboard.html">Dashboard</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</div>
+
+<!-- DONATE SECTION -->
+<div class="section">
+  <div class="container">
+    <div class="card form-card center">
+      <h2>Support a Cause</h2>
+      <p style="color: var(--muted); margin-bottom: 20px;">
+        Every contribution helps us reach more people in need.
+      </p>
+
+      <input id="amount" placeholder="Enter donation amount">
+
+      <button class="btn" onclick="donateMoney()">Donate Now</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
