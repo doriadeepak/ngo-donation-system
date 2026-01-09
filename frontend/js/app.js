@@ -1,6 +1,6 @@
 // REGISTER
 async function registerUser() {
-  const res = await fetch("http://localhost:5000/api/auth/register", {
+  const res = await fetch("https://ngo-donation-backend.onrender.com/api/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -17,7 +17,7 @@ async function registerUser() {
 
 // LOGIN
 async function loginUser() {
-  const res = await fetch("http://localhost:5000/api/auth/login", {
+  const res = await fetch("https://ngo-donation-backend.onrender.com/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -38,7 +38,7 @@ async function loginUser() {
 
 // DONATE
 async function donateMoney() {
-  const res = await fetch("http://localhost:5000/api/donation/create", {
+  const res = await fetch("https://ngo-donation-backend.onrender.com/api/donation/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -68,7 +68,7 @@ async function loadDonationHistory() {
     return;
   }
 
-  const res = await fetch("http://localhost:5000/api/donation/my-donations", {
+  const res = await fetch("https://ngo-donation-backend.onrender.com/api/donation/my-donations", {
     headers: {
       "Authorization": token
     }
@@ -103,7 +103,7 @@ async function loadAdminStats() {
   const token = localStorage.getItem("token");
   if (!token) return;
 
-  const res = await fetch("http://localhost:5000/api/admin/stats", {
+  const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/stats", {
     headers: {
       "Authorization": token
     }
@@ -119,7 +119,7 @@ async function loadAdminStats() {
 async function loadAdminUsers() {
   const token = localStorage.getItem("token");
 
-  const res = await fetch("http://localhost:5000/api/admin/users", {
+  const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/users", {
     headers: { Authorization: token }
   });
 
@@ -143,7 +143,7 @@ async function loadAdminUsers() {
 async function loadAdminDonations() {
   const token = localStorage.getItem("token");
 
-  const res = await fetch("http://localhost:5000/api/admin/donations", {
+  const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/donations", {
     headers: { Authorization: token }
   });
 
@@ -171,13 +171,13 @@ async function loadAdminReports() {
   const token = localStorage.getItem("token");
 
   // Get stats
-  const statsRes = await fetch("http://localhost:5000/api/admin/stats", {
+  const statsRes = await fetch("https://ngo-donation-backend.onrender.com/api/admin/stats", {
     headers: { Authorization: token }
   });
   const stats = await statsRes.json();
 
   // Get all donations
-  const donationsRes = await fetch("http://localhost:5000/api/admin/donations", {
+  const donationsRes = await fetch("https://ngo-donation-backend.onrender.com/api/admin/donations", {
     headers: { Authorization: token }
   });
   const donations = await donationsRes.json();
@@ -213,7 +213,7 @@ async function loadAdminCharts() {
   const token = localStorage.getItem("token");
   if (!token) return;
 
-  const res = await fetch("http://localhost:5000/api/admin/donations", {
+  const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/donations", {
     headers: { Authorization: token }
   });
 
