@@ -187,7 +187,7 @@ function closeModal() {
 async function loadDonationHistory() {
     const container = document.getElementById("historyContainer");
     try {
-        // Changed /my-history to /my-donations to match backend auth.js
+        // Matches the router.get("/my-donations") in your backend
         const res = await fetch(API_BASE + "/api/donation/my-donations", { 
             headers: { "Authorization": localStorage.getItem("token") }
         });
@@ -201,7 +201,6 @@ async function loadDonationHistory() {
         container.innerHTML = ""; 
         data.forEach(d => {
             const date = new Date(d.createdAt).toLocaleDateString();
-            // Ensure status and amount match your Mongoose model keys
             const card = `
                 <div class="card">
                     <h3>₹${d.amount}</h3>
@@ -212,7 +211,7 @@ async function loadDonationHistory() {
             container.innerHTML += card;
         });
     } catch (err) {
-        console.error(err);
+        console.error("History Error:", err);
         container.innerHTML = "<p>Failed to load history.</p>";
     }
 }

@@ -58,30 +58,34 @@ router.get("/stats", auth, adminOnly, async (req, res) => {
     const users = await User.getAll();
     const donations = await Donation.getAll();
 
-    const totalUsers = users.length;
-    const totalDonations = donations.length;
-
-    // Filter counts for the Doughnut Chart
+    // Calculate Counts for Chart.js
     const successCount = donations.filter(d => d.status === "success").length;
     const pendingCount = donations.filter(d => d.status === "pending").length;
     const failedCount = donations.filter(d => d.status === "failed").length;
 
-    const totalAmount = donations
+    // Financial breakdown for the Audit Report
+    const successAmount = donations
       .filter(d => d.status === "success")
       .reduce((sum, d) => sum + Number(d.amount), 0);
 
-    // Send everything the frontend needs
+    const pendingAmount = donations
+      .filter(d => d.status === "pending")
+      .reduce((sum, d) => sum + Number(d.amount), 0);
+
+    const failedAmount = donations
+      .filter(d => d.status === "failed")
+      .reduce((sum, d) => sum + Number(d.amount), 0);
+
     res.json({
-      totalUsers,
-      totalDonations,
-      totalAmount,
+      totalUsers: users.length,
+      totalDonations: donations.length,
+      totalAmount: successAmount, // Successful revenue
       successCount,
       pendingCount,
       failedCount,
-      // Also adding these for the PDF Report
-      successAmount: totalAmount,
-      pendingAmount: donations.filter(d => d.status === "pending").reduce((sum, d) => sum + Number(d.amount), 0),
-      failedAmount: donations.filter(d => d.status === "failed").reduce((sum, d) => sum + Number(d.amount), 0)
+      successAmount,
+      pendingAmount,
+      failedAmount
     });
   } catch (err) {
     console.error(err);
