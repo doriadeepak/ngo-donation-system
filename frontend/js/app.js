@@ -187,32 +187,25 @@ function closeModal() {
 async function loadDonationHistory() {
     const container = document.getElementById("historyContainer");
     try {
-        // Matches the router.get("/my-donations") in your backend
         const res = await fetch(API_BASE + "/api/donation/my-donations", { 
             headers: { "Authorization": localStorage.getItem("token") }
         });
         const data = await res.json();
         
         if (!data || data.length === 0) {
-            container.innerHTML = "<p>No donations found. Start your journey today!</p>";
+            container.innerHTML = "<p>No donations found.</p>";
             return;
         }
 
-        container.innerHTML = ""; 
-        data.forEach(d => {
-            const date = new Date(d.createdAt).toLocaleDateString();
-            const card = `
-                <div class="card">
-                    <h3>₹${d.amount}</h3>
-                    <p>Status: <b>${d.status || 'success'}</b></p>
-                    <p>Date: ${date}</p>
-                </div>
-            `;
-            container.innerHTML += card;
-        });
+        container.innerHTML = data.map(d => `
+            <div class="card">
+                <h3>₹${d.amount}</h3>
+                <p>Status: <b>${d.status || 'success'}</b></p>
+                <p>Date: ${new Date(d.createdAt).toLocaleDateString()}</p>
+            </div>
+        `).join('');
     } catch (err) {
-        console.error("History Error:", err);
-        container.innerHTML = "<p>Failed to load history.</p>";
+        container.innerHTML = "<p>Error loading history.</p>";
     }
 }
 
@@ -242,43 +235,29 @@ async function loadAdminCharts() {
             headers: { "Authorization": localStorage.getItem("token") }
         });
         const data = await res.json();
-        
         if(!res.ok) return;
 
-        // 1. Success Rate Chart (Doughnut)
+        // Draw Doughnut
         new Chart(document.getElementById('statusChart'), {
             type: 'doughnut',
             data: {
                 labels: ['Success', 'Pending', 'Failed'],
                 datasets: [{
-                    data: [data.successCount || 0, data.pendingCount || 0, data.failedCount || 0],
-                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
-                    borderWidth: 0
+                    data: [data.successCount, data.pendingCount, data.failedCount],
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
                 }]
-            },
-            options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+            }
         });
 
-        // 2. Revenue Chart (Simple Bar)
+        // Draw Bar
         new Chart(document.getElementById('amountChart'), {
             type: 'bar',
             data: {
-                labels: ['Total Revenue'],
-                datasets: [{
-                    label: 'Amount in ₹',
-                    data: [data.totalAmount || 0],
-                    backgroundColor: '#4A6741',
-                    borderRadius: 10
-                }]
-            },
-            options: { 
-                scales: { y: { beginAtZero: true } },
-                plugins: { legend: { display: false } }
+                labels: ['Revenue'],
+                datasets: [{ label: '₹', data: [data.totalAmount], backgroundColor: '#4A6741' }]
             }
         });
-    } catch(err) {
-        console.error("Chart Error:", err);
-    }
+    } catch(err) { console.error("Chart Error:", err); }
 }
 
 // ADMIN: LOAD USERS

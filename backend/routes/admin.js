@@ -58,28 +58,24 @@ router.get("/stats", auth, adminOnly, async (req, res) => {
     const users = await User.getAll();
     const donations = await Donation.getAll();
 
-    // Calculate Counts for Chart.js
+    // 1. Data for the Doughnut Chart
     const successCount = donations.filter(d => d.status === "success").length;
     const pendingCount = donations.filter(d => d.status === "pending").length;
     const failedCount = donations.filter(d => d.status === "failed").length;
 
-    // Financial breakdown for the Audit Report
+    // 2. Data for the Bar Chart & Revenue display
     const successAmount = donations
       .filter(d => d.status === "success")
       .reduce((sum, d) => sum + Number(d.amount), 0);
 
-    const pendingAmount = donations
-      .filter(d => d.status === "pending")
-      .reduce((sum, d) => sum + Number(d.amount), 0);
-
-    const failedAmount = donations
-      .filter(d => d.status === "failed")
-      .reduce((sum, d) => sum + Number(d.amount), 0);
+    // 3. Data for the PDF Audit Report breakdown
+    const pendingAmount = donations.filter(d => d.status === "pending").reduce((sum, d) => sum + Number(d.amount), 0);
+    const failedAmount = donations.filter(d => d.status === "failed").reduce((sum, d) => sum + Number(d.amount), 0);
 
     res.json({
       totalUsers: users.length,
       totalDonations: donations.length,
-      totalAmount: successAmount, // Successful revenue
+      totalAmount: successAmount, 
       successCount,
       pendingCount,
       failedCount,
