@@ -1,36 +1,211 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Donate | NGO CARE</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="js/app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Donation | NGO CARE</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="js/app.js"></script>
+
+    <style>
+        /* MAIN CONTAINER */
+        .donate-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden; 
+            background: #FDFBF7;
+        }
+
+        /* --- 1. AMBIENT BLOBS --- */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 1;
+            opacity: 0.6; /* Increased visibility */
+            animation: moveBlob 15s infinite alternate;
+        }
+        .blob-1 { width: 400px; height: 400px; background: rgba(209, 122, 87, 0.25); top: -10%; left: -10%; }
+        .blob-2 { width: 500px; height: 500px; background: rgba(74, 103, 65, 0.2); bottom: -10%; right: -10%; animation-delay: -5s; }
+        
+        @keyframes moveBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 60px) scale(1.1); }
+        }
+
+        /* --- 2. PARTICLES (More & More Visible) --- */
+        .particles-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; 
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(74, 103, 65, 0.4); /* DARKER GREEN for visibility */
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+        }
+
+        /* Shapes */
+        .p-cross {
+            background: none;
+            width: 15px; height: 15px;
+            position: relative;
+        }
+        .p-cross::after, .p-cross::before {
+            content: ''; position: absolute; background: rgba(209, 122, 87, 0.6); /* DARKER ORANGE */
+        }
+        .p-cross::after { width: 100%; height: 3px; top: 50%; left: 0; }
+        .p-cross::before { width: 3px; height: 100%; top: 0; left: 50%; }
+
+        .p-ring {
+            background: none; border: 3px solid rgba(74, 103, 65, 0.3); /* Thicker border */
+        }
+
+        /* Positions & Speeds (Added more) */
+        .p-1 { left: 10%; width: 10px; height: 10px; animation-duration: 15s; bottom: -20px; }
+        .p-2 { left: 20%; width: 20px; height: 20px; animation-duration: 25s; animation-delay: -5s; bottom: -50px; }
+        .p-3 { left: 35%; width: 8px; height: 8px; animation-duration: 18s; animation-delay: -2s; bottom: -10px; opacity: 0.8; }
+        .p-4 { left: 50%; width: 18px; height: 18px; animation-duration: 22s; bottom: -30px; }
+        .p-5 { left: 65%; width: 12px; height: 12px; animation-duration: 12s; animation-delay: -8s; bottom: -20px; }
+        .p-6 { left: 80%; width: 25px; height: 25px; animation-duration: 30s; bottom: -60px; }
+        .p-7 { left: 90%; width: 15px; height: 15px; animation-duration: 20s; animation-delay: -3s; bottom: -40px; }
+        
+        /* New Batch */
+        .p-8 { left: 5%; width: 12px; height: 12px; animation-duration: 28s; bottom: -20px; opacity: 0.5; }
+        .p-9 { left: 28%; width: 22px; height: 22px; animation-duration: 35s; bottom: -50px; }
+        .p-10 { left: 45%; width: 10px; height: 10px; animation-duration: 14s; bottom: -10px; }
+        .p-11 { left: 75%; width: 16px; height: 16px; animation-duration: 24s; bottom: -30px; }
+
+        /* Static floaters (Corners) */
+        .p-static-1 { top: 15%; left: 8%; animation: floatStatic 5s ease-in-out infinite; } 
+        .p-static-2 { top: 10%; right: 5%; animation: floatStatic 7s ease-in-out infinite; animation-delay: 1s; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; } /* Visible quickly */
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes floatStatic {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* --- 3. TRUST BADGES --- */
+        .float-badge {
+            position: absolute;
+            background: white;
+            padding: 10px 18px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            font-size: 0.8rem; font-weight: 700; color: var(--text-muted);
+            display: flex; align-items: center; gap: 8px;
+            z-index: 5;
+            animation: floatStatic 6s ease-in-out infinite;
+        }
+        .badge-1 { top: 18%; left: 15%; transform: rotate(-6deg); }
+        .badge-2 { bottom: 20%; right: 18%; animation-delay: 2s; transform: rotate(6deg); }
+
+        /* --- 4. THE CARD --- */
+        .donate-card {
+            background: white; padding: 50px; border-radius: 30px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.08); 
+            max-width: 500px; width: 90%; text-align: center;
+            position: relative; z-index: 10;
+            border-top: 6px solid var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .float-badge, .p-ring, .p-cross { display: none; } 
+            .blob { opacity: 0.3; }
+        }
+
+        /* INPUTS & PRESETS */
+        .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 30px 0 20px; }
+        .preset-btn { padding: 10px; border: 2px solid #f0f0f0; background: transparent; border-radius: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+        .preset-btn:hover, .preset-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(74, 103, 65, 0.05); }
+        .money-input-group { position: relative; margin-bottom: 30px; }
+        .currency-symbol { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 1.5rem; color: var(--text-dark); font-weight: 700; }
+        #amount { width: 100%; padding: 20px 20px 20px 50px; font-size: 2rem; font-weight: 700; color: var(--text-dark); border: 2px solid #f0f0f0; border-radius: 15px; outline: none; transition: 0.3s; }
+        #amount:focus { border-color: var(--accent); box-shadow: 0 10px 30px rgba(209, 122, 87, 0.15); }
+        .secure-badge { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; font-size: 0.8rem; color: #888; opacity: 0.7; }
+    </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<div class="navbar">
-  <div class="logo">NGO CARE</div>
-  <div>
-    <a href="user-dashboard.html">Dashboard</a>
-    <a href="#" onclick="logout()">Logout</a>
-  </div>
-</div>
+    <nav class="navbar" style="position: absolute;">
+        <div class="logo">NGO CARE.</div>
+        <div class="nav-links">
+            <a href="user-dashboard.html" class="back-link">&larr; Dashboard</a>
+        </div>
+    </nav>
 
-<!-- DONATE SECTION -->
-<div class="section">
-  <div class="container">
-    <div class="card form-card center">
-      <h2>Support a Cause</h2>
-      <p style="color: var(--muted); margin-bottom: 20px;">
-        Every contribution helps us reach more people in need.
-      </p>
+    <div class="donate-section">
+        
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
 
-      <input id="amount" placeholder="Enter donation amount">
+        <div class="particles-container">
+            <div class="particle p-1"></div> <div class="particle p-2 p-ring"></div> <div class="particle p-3"></div> <div class="particle p-4 p-cross"></div> <div class="particle p-5"></div> <div class="particle p-6 p-ring"></div> <div class="particle p-7 p-cross"></div> <div class="particle p-8"></div>
+            <div class="particle p-9 p-ring"></div>
+            <div class="particle p-10"></div>
+            <div class="particle p-11 p-cross"></div>
 
-      <button class="btn" onclick="donateMoney()">Donate Now</button>
+            <div class="particle p-cross p-static-1"></div>
+            <div class="particle p-ring p-static-2"></div>
+        </div>
+
+        <div class="float-badge badge-1">
+            <span>❤️</span> 120 Donors today
+        </div>
+        <div class="float-badge badge-2">
+            <span>🧾</span> Tax Benefit Available
+        </div>
+
+        <div class="donate-card" data-aos="zoom-in" data-aos-duration="800">
+            <h2 style="margin-bottom: 10px;">Make a Difference</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+                Your support changes lives immediately.
+            </p>
+
+            <div class="preset-grid">
+                <button class="preset-btn" onclick="setAmount(100)">₹100</button>
+                <button class="preset-btn" onclick="setAmount(500)">₹500</button>
+                <button class="preset-btn" onclick="setAmount(1000)">₹1000</button>
+            </div>
+
+            <div class="money-input-group">
+                <span class="currency-symbol">₹</span>
+                <input id="amount" type="number" placeholder="0">
+            </div>
+
+            <button class="btn-primary" onclick="donateMoney()" style="width: 100%; border: none; cursor: pointer;">
+                Proceed to Pay
+            </button>
+
+            <div class="secure-badge">
+                <span>🔒</span> SSL Encrypted & Secure
+            </div>
+        </div>
     </div>
-  </div>
-</div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+        function setAmount(value) {
+            document.getElementById('amount').value = value;
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+    </script>
 
 </body>
 </html>

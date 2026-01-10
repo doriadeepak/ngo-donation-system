@@ -1,56 +1,97 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>User Dashboard | NGO CARE</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | NGO CARE</title>
+    
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
     <script src="js/app.js"></script>
-</head>
 
+    <script>
+        if (!localStorage.getItem("token")) {
+            window.location.replace("login.html");
+        }
+    </script>
+
+    <style>
+        /* A shorter version of the Hero for internal pages */
+        .dashboard-header {
+            background: radial-gradient(circle at 10% 20%, rgba(209, 122, 87, 0.1) 0%, rgba(253, 251, 247, 0) 40%);
+            padding: 120px 10% 60px; /* Space for fixed navbar */
+            text-align: center;
+        }
+
+        /* Icon Styling */
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            padding: 15px;
+            background: rgba(74, 103, 65, 0.1); /* Soft Green bg */
+            border-radius: 50%;
+            color: var(--primary);
+        }
+
+        .action-grid {
+            padding: 0 10% 100px;
+            margin-top: -40px; /* Overlap effect */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        /* FORCE ALIGNMENT: Makes the second card align with the first */
+        .impact-card:nth-child(2) {
+            margin-top: 0 !important; 
+        }
+    </style>
+</head>
 <body>
 
-    <!-- NAVBAR -->
-    <div class="navbar">
-        <div class="logo">NGO CARE</div>
-        <div>
+    <nav class="navbar" data-aos="fade-down">
+        <div class="logo">NGO CARE.</div>
+        <div class="nav-links">
             <a href="donate.html">Donate</a>
-            <a href="#" onclick="logout()">Logout</a>
+            <a href="#" onclick="logout()" style="color: var(--accent);">Logout</a>
         </div>
+    </nav>
+
+    <div class="dashboard-header" data-aos="fade-in">
+        <h1 style="font-size: 3rem;">Welcome Home, Changemaker.</h1>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 10px auto;">
+            Your dashboard is the central hub for your impact. Manage your contributions and see the difference you are making.
+        </p>
     </div>
 
-    <!-- DASHBOARD SECTION -->
-    <div class="section">
-        <div class="container">
-            <h2 class="center">Welcome to Your Dashboard</h2>
-            <p class="center" style="color: var(--muted); margin-bottom: 40px;">
-                Thank you for being part of our mission.
+    <div class="action-grid">
+        
+        <div class="impact-card" data-aos="fade-up" data-aos-delay="100" style="text-align: center; cursor: pointer;" onclick="location.href='donate.html'">
+            <div class="card-icon">🌱</div> <h3>Make a Donation</h3>
+            <p style="color: var(--text-muted); margin: 15px 0 25px;">
+                Support our newest initiatives. Every contribution plants a seed for a better future.
             </p>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
-
-                <div class="card center">
-                    <h3>Make a Donation</h3>
-                    <p style="color: var(--muted);">
-                        Support our ongoing initiatives and help those in need.
-                    </p>
-                    <button class="btn" onclick="location.href='donate.html'">Donate</button>
-                </div>
-
-                <div class="card center">
-                    <h3>Your Impact</h3>
-                    <p style="color: var(--muted);">
-                        Track your contributions and donation history.
-                    </p>
-                    <button class="btn outline" onclick="location.href='donation-history.html'">
-                        View History
-                    </button>
-
-                </div>
-
-            </div>
+            <button class="btn-primary" style="width: 100%;">Donate Now</button>
         </div>
+
+        <div class="impact-card" data-aos="fade-up" data-aos-delay="200" style="text-align: center; cursor: pointer;" onclick="location.href='donation-history.html'">
+            <div class="card-icon">📜</div> <h3>Your Legacy</h3>
+            <p style="color: var(--text-muted); margin: 15px 0 25px;">
+                View your past contributions, download receipts, and track your total impact over time.
+            </p>
+            <button class="btn-nav" style="background: white; border: 2px solid var(--text-dark); color: var(--text-dark) !important; width: 100%;">View History</button>
+        </div>
+
     </div>
+
+    <footer style="padding: 40px 10%; text-align: center; font-size: 0.9rem;">
+        <p style="opacity: 0.6;">&copy; 2024 NGO CARE Foundation. We appreciate you.</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init();</script>
 
 </body>
-
 </html>

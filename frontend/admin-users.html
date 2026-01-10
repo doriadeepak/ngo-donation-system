@@ -1,26 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>All Users | NGO CARE</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="js/app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users | NGO CARE</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <script>
+      (function() {
+        const token = localStorage.getItem("token");
+        const role = localStorage.getItem("role");
+        if (!token || role !== "admin") { window.location.replace("index.html"); }
+      })();
+    </script>
+    <script src="js/app.js"></script>
+
+    <style>
+        /* PAGE BACKGROUND */
+        body {
+            background-color: #FDFBF7;
+            /* Subtle stripe pattern */
+            background-image: repeating-linear-gradient(45deg, #FDFBF7 25%, transparent 25%, transparent 75%, #FDFBF7 75%, #FDFBF7), repeating-linear-gradient(45deg, #FDFBF7 25%, #FDFBF7 25%, #FDFBF7 75%, #FDFBF7 75%, #FDFBF7);
+            background-position: 0 0, 10px 10px;
+            background-size: 20px 20px;
+        }
+
+        /* HEADER */
+        .page-header {
+            max-width: 1100px;
+            margin: 100px auto 30px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h2 {
+            font-size: 2.2rem;
+            color: var(--text-dark);
+        }
+
+        /* GRID LAYOUT */
+        #adminUsers {
+            max-width: 1100px;
+            margin: 0 auto 100px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Wider cards */
+            gap: 25px;
+        }
+
+        /* --- USER CARD STYLING (Targets JS output) --- */
+        /* app.js outputs <div class="card">...</div> */
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary); /* Green accent bar */
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(74, 103, 65, 0.1);
+        }
+
+        /* Styling the <p> tags inside the card */
+        .card p {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: space-between; /* Pushes label and value apart */
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 8px;
+        }
+
+        .card p:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        /* Styling the <b> tags (Label names like 'Name:', 'Email:') */
+        .card b {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Special style for Admin cards (Dynamic via JS below) */
+        .card.admin-role {
+            border-left-color: var(--accent); /* Orange bar for admins */
+            background-color: #fffbf7; /* Slight cream tint */
+        }
+    </style>
 </head>
 <body onload="loadAdminUsers()">
 
-<div class="navbar">
-  <div class="logo">NGO CARE</div>
-  <div>
-    <a href="admin-dashboard.html">Dashboard</a>
-    <a href="#" onclick="logout()">Logout</a>
-  </div>
-</div>
+    <nav class="navbar" data-aos="fade-down">
+        <div class="logo">NGO ADMIN</div>
+        <div class="nav-links">
+            <a href="admin-dashboard.html" class="back-link">&larr; Dashboard</a>
+        </div>
+    </nav>
 
-<div class="section">
-  <div class="container">
-    <h2 class="center">Registered Users</h2>
-    <div id="adminUsers" style="display:grid; gap:20px; margin-top:40px;"></div>
-  </div>
-</div>
+    <div class="page-header" data-aos="fade-right">
+        <div>
+            <h2>User Database</h2>
+            <p style="color: var(--text-muted);">View registered members</p>
+        </div>
+        <button class="btn-primary" onclick="location.reload()" style="padding: 10px 25px; font-size: 0.9rem; border:none; cursor:pointer;">
+            Refresh List ↻
+        </button>
+    </div>
+
+    <div id="adminUsers" data-aos="fade-up" data-aos-delay="200">
+        <p style="grid-column: 1/-1; text-align: center; color: #999;">Loading user directory...</p>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length) {
+                    document.querySelectorAll('.card').forEach(card => {
+                        // Check if the card contains "Role: admin" text
+                        if (card.innerHTML.toLowerCase().includes('admin')) {
+                            card.classList.add('admin-role');
+                            // Optional: Add a badge
+                            if (!card.querySelector('.admin-badge')) {
+                                const badge = document.createElement('span');
+                                badge.className = 'admin-badge';
+                                badge.innerHTML = '🛡️ ADMIN';
+                                badge.style.cssText = "position:absolute; top:15px; right:15px; font-size:10px; background:var(--accent); color:white; padding:2px 6px; border-radius:4px;";
+                                card.appendChild(badge);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        observer.observe(document.getElementById('adminUsers'), { childList: true });
+    </script>
 
 </body>
 </html>

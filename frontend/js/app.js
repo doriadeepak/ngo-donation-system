@@ -1,110 +1,124 @@
-// SECURITY CHECK (The Bouncer) - Prevents unauthorized access
+// ==========================================
+// 🛡️ SECURITY & AUTHENTICATION
+// ==========================================
+
+// THE BOUNCER: Checks if user is allowed to be here
 function checkAdminAccess() {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
-  // If not logged in -> Login page
+  // 1. If not logged in -> Go to Login
   if (!token) {
-    window.location.href = "login.html";
+    window.location.replace("login.html"); // 'replace' prevents back-button loop
     return false;
   }
 
-  // If logged in but NOT admin -> Kick to Home
+  // 2. If logged in but NOT admin -> Kick to Home
   if (role !== "admin") {
-    alert("Access Denied: Admins Only!");
-    window.location.href = "index.html"; 
+    alert("⛔ Access Denied: Administrators Only.");
+    window.location.replace("index.html");
     return false;
   }
   return true;
 }
 
+// LOGOUT
+function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  window.location.replace("login.html");
+}
+
+// ==========================================
+// 👤 USER FUNCTIONS (Auth & Dashboard)
+// ==========================================
+
 // REGISTER
 async function registerUser() {
-  const res = await fetch("https://ngo-donation-backend.onrender.com/api/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: rname.value,
-      email: remail.value,
-      password: rpassword.value
-    })
-  });
+  try {
+    const res = await fetch("https://ngo-donation-backend.onrender.com/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: rname.value,
+        email: remail.value,
+        password: rpassword.value
+      })
+    });
 
-  const data = await res.json();
-  alert(data.message);
-  window.location.href = "login.html";
+    const data = await res.json();
+    alert(data.message);
+    if (res.ok) window.location.href = "login.html";
+  } catch (err) {
+    alert("Connection Error. Please try again.");
+  }
 }
 
 // LOGIN
 async function loginUser() {
-  const res = await fetch("https://ngo-donation-backend.onrender.com/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      email: lemail.value,
-      password: lpassword.value
-    })
-  });
+  try {
+    const res = await fetch("https://ngo-donation-backend.onrender.com/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: lemail.value,
+        password: lpassword.value
+      })
+    });
 
-  const data = await res.json();
-  
-  if (data.token) {
+    const data = await res.json();
+
+    if (data.token) {
       localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role); // ADDED: Saves role so we can check it later!
-    
+      localStorage.setItem("role", data.role);
+
+      // Redirect based on Role
       if (data.role === "admin") {
-        window.location.href = "admin-dashboard.html";
+        window.location.replace("admin-dashboard.html");
       } else {
-        window.location.href = "user-dashboard.html";
+        window.location.replace("user-dashboard.html");
       }
-  } else {
+    } else {
       alert(data.message);
+    }
+  } catch (err) {
+    alert("Login failed. Check your internet connection.");
   }
 }
 
 // DONATE
 async function donateMoney() {
+  if (!amount.value) return alert("Please enter an amount.");
+
   const res = await fetch("https://ngo-donation-backend.onrender.com/api/donation/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": localStorage.getItem("token")
     },
-    body: JSON.stringify({
-      amount: amount.value
-    })
+    body: JSON.stringify({ amount: amount.value })
   });
 
   const data = await res.json();
   alert(data.message);
+  // Optional: Reload page to show new donation in history immediately
+  // location.reload(); 
 }
 
-// LOGOUT
-function logout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role"); // ADDED: Clear role on logout
-  window.location.href = "login.html";
-}
-
-// LOAD DONATION HISTORY
+// LOAD USER HISTORY
 async function loadDonationHistory() {
   const token = localStorage.getItem("token");
-
   if (!token) {
-    alert("Please login first");
-    window.location.href = "login.html";
+    window.location.replace("login.html");
     return;
   }
 
   const res = await fetch("https://ngo-donation-backend.onrender.com/api/donation/my-donations", {
-    headers: {
-      "Authorization": token
-    }
+    headers: { "Authorization": token }
   });
 
   const donations = await res.json();
   const container = document.getElementById("historyContainer");
-
   container.innerHTML = "";
 
   if (donations.length === 0) {
@@ -114,41 +128,46 @@ async function loadDonationHistory() {
 
   donations.forEach(d => {
     const card = document.createElement("div");
-    card.className = "card center";
+    card.className = "card"; // CSS handles the layout now
+
+    // Format Money (e.g., 10,000)
+    const formattedAmount = Number(d.amount).toLocaleString('en-IN');
 
     card.innerHTML = `
-      <h3>₹ ${d.amount}</h3>
+      <h3>₹ ${formattedAmount}</h3>
       <p>Status: <b>${d.status}</b></p>
       <p style="color: var(--muted); font-size: 14px;">
         ${new Date(d.timestamp).toLocaleString()}
       </p>
     `;
-
     container.appendChild(card);
   });
 }
 
-// ADMIN - STATS
+// ==========================================
+// 🛡️ ADMIN DASHBOARD FUNCTIONS
+// ==========================================
+
+// ADMIN - LOAD STATS
 async function loadAdminStats() {
-  if (!checkAdminAccess()) return; // ADDED: Kicks user out if not admin
+  if (!checkAdminAccess()) return;
 
   const token = localStorage.getItem("token");
   const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/stats", {
-    headers: {
-      "Authorization": token
-    }
+    headers: { "Authorization": token }
   });
 
   const data = await res.json();
 
   document.getElementById("totalUsers").innerText = data.totalUsers;
   document.getElementById("totalDonations").innerText = data.totalDonations;
-  document.getElementById("totalAmount").innerText = "₹ " + data.totalAmount;
+  // Professional Money Format
+  document.getElementById("totalAmount").innerText = "₹ " + data.totalAmount.toLocaleString('en-IN');
 }
 
 // ADMIN - LOAD USERS
 async function loadAdminUsers() {
-  if (!checkAdminAccess()) return; // ADDED
+  if (!checkAdminAccess()) return;
 
   const token = localStorage.getItem("token");
   const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/users", {
@@ -162,6 +181,9 @@ async function loadAdminUsers() {
   users.forEach(u => {
     const div = document.createElement("div");
     div.className = "card";
+    // Check if admin to add special badge logic if needed
+    if (u.role === 'admin') div.innerHTML += `<span style="display:none">admin</span>`;
+
     div.innerHTML = `
       <p><b>Name:</b> ${u.name}</p>
       <p><b>Email:</b> ${u.email}</p>
@@ -173,7 +195,7 @@ async function loadAdminUsers() {
 
 // ADMIN - LOAD DONATIONS
 async function loadAdminDonations() {
-  if (!checkAdminAccess()) return; // ADDED
+  if (!checkAdminAccess()) return;
 
   const token = localStorage.getItem("token");
   const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/donations", {
@@ -187,9 +209,12 @@ async function loadAdminDonations() {
   donations.forEach(d => {
     const div = document.createElement("div");
     div.className = "card";
+
+    const formattedAmount = Number(d.amount).toLocaleString('en-IN');
+
     div.innerHTML = `
       <p><b>User ID:</b> ${d.userId}</p>
-      <p><b>Amount:</b> ₹${d.amount}</p>
+      <p><b>Amount:</b> ₹${formattedAmount}</p>
       <p><b>Status:</b> ${d.status}</p>
       <p style="color:var(--muted); font-size:14px;">
         ${new Date(d.timestamp).toLocaleString()}
@@ -199,103 +224,92 @@ async function loadAdminDonations() {
   });
 }
 
-// ADMIN REPORTS (DETAILED)
+// ADMIN - REPORTS
 async function loadAdminReports() {
-  if (!checkAdminAccess()) return; // ADDED
+  if (!checkAdminAccess()) return;
 
   const token = localStorage.getItem("token");
 
-  // Get stats
-  const statsRes = await fetch("https://ngo-donation-backend.onrender.com/api/admin/stats", {
-    headers: { Authorization: token }
-  });
-  const stats = await statsRes.json();
+  // Parallel Fetch for speed
+  const [statsRes, donationsRes] = await Promise.all([
+    fetch("https://ngo-donation-backend.onrender.com/api/admin/stats", { headers: { Authorization: token } }),
+    fetch("https://ngo-donation-backend.onrender.com/api/admin/donations", { headers: { Authorization: token } })
+  ]);
 
-  // Get all donations
-  const donationsRes = await fetch("https://ngo-donation-backend.onrender.com/api/admin/donations", {
-    headers: { Authorization: token }
-  });
+  const stats = await statsRes.json();
   const donations = await donationsRes.json();
 
-  let successAmount = 0;
-  let pendingAmount = 0;
-  let failedAmount = 0;
+  let success = 0, pending = 0, failed = 0;
 
   donations.forEach(d => {
-    if (d.status === "success") {
-      successAmount += Number(d.amount);
-    } else if (d.status === "pending") {
-      pendingAmount += Number(d.amount);
-    } else if (d.status === "failed") {
-      failedAmount += Number(d.amount);
-    }
+    const amt = Number(d.amount);
+    if (d.status === "success") success += amt;
+    else if (d.status === "pending") pending += amt;
+    else if (d.status === "failed") failed += amt;
   });
 
+  // Fill UI
   document.getElementById("rUsers").innerText = stats.totalUsers;
   document.getElementById("rDonations").innerText = stats.totalDonations;
-  document.getElementById("rAmount").innerText = stats.totalAmount;
+  document.getElementById("rAmount").innerText = stats.totalAmount.toLocaleString('en-IN');
 
-  document.getElementById("rSuccess").innerText = successAmount;
-  document.getElementById("rPending").innerText = pendingAmount;
-  document.getElementById("rFailed").innerText = failedAmount;
+  document.getElementById("rSuccess").innerText = success.toLocaleString('en-IN');
+  document.getElementById("rPending").innerText = pending.toLocaleString('en-IN');
+  document.getElementById("rFailed").innerText = failed.toLocaleString('en-IN');
 
   document.getElementById("rTime").innerText = new Date().toLocaleString();
 }
 
-// ADMIN CHARTS
+// ADMIN - CHARTS (With Earth Theme Colors)
 async function loadAdminCharts() {
-  if (!checkAdminAccess()) return; // ADDED
-
+  if (!checkAdminAccess()) return;
   const token = localStorage.getItem("token");
-  if (!token) return;
 
   const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/donations", {
     headers: { Authorization: token }
   });
-
   const donations = await res.json();
 
-  let successCount = 0;
-  let pendingCount = 0;
-  let failedCount = 0;
-
-  let successAmount = 0;
-  let pendingAmount = 0;
-  let failedAmount = 0;
+  let sCount = 0, pCount = 0, fCount = 0;
+  let sAmt = 0, pAmt = 0, fAmt = 0;
 
   donations.forEach(d => {
-    if (d.status === "success") {
-      successCount++;
-      successAmount += Number(d.amount);
-    } else if (d.status === "pending") {
-      pendingCount++;
-      pendingAmount += Number(d.amount);
-    } else if (d.status === "failed") {
-      failedCount++;
-      failedAmount += Number(d.amount);
-    }
+    const amt = Number(d.amount);
+    if (d.status === "success") { sCount++; sAmt += amt; }
+    else if (d.status === "pending") { pCount++; pAmt += amt; }
+    else if (d.status === "failed") { fCount++; fAmt += amt; }
   });
 
-  // Pie Chart - Status Distribution
+  // Theme Colors: Green, Orange, Red
+  const chartColors = ['#10b981', '#f59e0b', '#ef4444'];
+
+  // 1. PIE CHART
   new Chart(document.getElementById("statusChart"), {
     type: "pie",
     data: {
       labels: ["Success", "Pending", "Failed"],
       datasets: [{
-        data: [successCount, pendingCount, failedCount]
+        data: [sCount, pCount, fCount],
+        backgroundColor: chartColors
       }]
     }
   });
 
-  // Bar Chart - Amount by Status
+  // 2. BAR CHART
   new Chart(document.getElementById("amountChart"), {
     type: "bar",
     data: {
       labels: ["Success", "Pending", "Failed"],
       datasets: [{
-        label: "Amount (₹)",
-        data: [successAmount, pendingAmount, failedAmount]
+        label: "Funds (₹)",
+        data: [sAmt, pAmt, fAmt],
+        backgroundColor: chartColors
       }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true }
+      }
     }
   });
 }

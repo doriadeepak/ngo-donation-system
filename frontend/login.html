@@ -1,42 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login | NGO CARE</title>
+  
   <link rel="stylesheet" href="css/style.css">
-  <script src="js/app.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+  <script src="js/app.js"></script> 
 </head>
 <body>
 
-<!-- NAVBAR -->
-<div class="navbar">
-  <div class="logo">NGO CARE</div>
-  <div>
-    <a href="index.html">Home</a>
-    <a href="register.html">Register</a>
-  </div>
-</div>
-
-<!-- LOGIN SECTION -->
-<div class="section">
-  <div class="container">
-    <div class="card form-card">
-      <h2 class="center">Welcome Back</h2>
-      <p class="center" style="color: var(--muted); margin-bottom: 20px;">
-        Login to continue supporting our cause
-      </p>
-
-      <input id="lemail" placeholder="Email address">
-      <input id="lpassword" type="password" placeholder="Password">
-
-      <button class="btn" onclick="loginUser()">Login</button>
-
-      <p class="center" style="margin-top: 15px; color: var(--muted);">
-        New here?
-        <a href="register.html">Create an account</a>
-      </p>
+<div class="auth-container">
+  
+  <div class="auth-image">
+    <div class="auth-quote" data-aos="fade-up">
+      <h2>"The smallest act of kindness is worth more than the grandest intention."</h2>
+      <p style="opacity: 0.8;">- Oscar Wilde</p>
     </div>
   </div>
+
+  <div class="auth-form-side">
+    
+    <a href="index.html" class="back-home">
+      <span>&larr;</span> Back to Home
+    </a>
+
+    <div class="form-wrapper" data-aos="fade-left" data-aos-duration="1000">
+      <div style="margin-bottom: 30px;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 10px;">Welcome Back</h2>
+        <p style="color: var(--text-muted);">Please enter your details to continue.</p>
+      </div>
+
+      <div class="input-group">
+        <label>Email Address</label>
+        <input id="lemail" type="email" class="input-field" placeholder="hello@example.com">
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input id="lpassword" type="password" class="input-field" placeholder="••••••••">
+      </div>
+
+      <button class="btn-primary" onclick="loginUser()" style="width: 100%; border: none; cursor: pointer; border-radius: 12px; margin-top: 10px;">
+        Sign In
+      </button>
+
+      <p style="margin-top: 25px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+        Don't have an account? 
+        <a href="register.html" style="color: var(--accent); font-weight: 700; text-decoration: none;">Join us</a>
+      </p>
+    </div>
+
+  </div>
 </div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
 
 </body>
 </html>

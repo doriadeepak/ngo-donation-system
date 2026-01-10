@@ -1,35 +1,194 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Donation History | NGO CARE</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="js/app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation History | NGO CARE</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="js/app.js"></script>
+
+    <style>
+        /* PAGE BACKGROUND - Subtle Ledger Texture */
+        body {
+            background-color: #FDFBF7;
+            background-image: radial-gradient(#D17A57 0.5px, transparent 0.5px);
+            background-size: 30px 30px; /* Minimal dot pattern */
+        }
+
+        /* HEADER */
+        .history-header {
+            text-align: center;
+            padding: 120px 20px 40px;
+        }
+
+        .history-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* GRID CONTAINER */
+        #historyContainer {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 100px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        /* --- CARD STYLING (Overriding app.js output) --- */
+        /* app.js generates: <div class="card center"> */
+        
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            
+            /* Override the 'center' class from JS for a cleaner receipt look */
+            text-align: left !important; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(74, 103, 65, 0.1);
+            border-color: var(--primary);
+        }
+
+        /* The Top Colored Bar (Visual Flair) */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 6px; height: 100%;
+            background: #eee; /* Default Gray */
+            transition: 0.3s;
+        }
+
+        /* TYPOGRAPHY OVERRIDES */
+        
+        /* The Amount (<h3>) */
+        .card h3 {
+            font-size: 2.2rem;
+            color: var(--text-dark);
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        /* The Status Text (<p>) */
+        .card p {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* The Status Badge (<b>) - We style this heavily */
+        .card b {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            vertical-align: middle;
+            margin-left: 5px;
+            background: #f3f4f6; /* Default gray bg */
+            color: #374151;
+        }
+
+        /* The Date (<p style...>) */
+        .card p:last-child {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px dashed #f0f0f0; /* The "Receipt tear" line */
+            font-size: 0.8rem !important;
+            opacity: 0.8;
+            font-family: 'Courier New', monospace; /* Monospace for date looks like a printout */
+        }
+
+        /* Empty State Message */
+        #historyContainer > p {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 20px;
+            border: 2px dashed #ddd;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+    </style>
 </head>
 <body onload="loadDonationHistory()">
 
-<!-- NAVBAR -->
-<div class="navbar">
-  <div class="logo">NGO CARE</div>
-  <div>
-    <a href="user-dashboard.html">Dashboard</a>
-    <a href="#" onclick="logout()">Logout</a>
-  </div>
-</div>
+    <nav class="navbar" data-aos="fade-down">
+        <div class="logo">NGO CARE.</div>
+        <div class="nav-links">
+            <a href="user-dashboard.html" class="back-link">&larr; Dashboard</a>
+        </div>
+    </nav>
 
-<!-- HISTORY SECTION -->
-<div class="section">
-  <div class="container">
-    <h2 class="center">Your Donation History</h2>
-    <p class="center" style="color: var(--muted); margin-bottom: 40px;">
-      Below is a record of all your donation attempts.
-    </p>
-
-    <div id="historyContainer"
-         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px;">
-      <!-- Donation cards will be inserted here -->
+    <div class="history-header" data-aos="fade-up">
+        <h2>Impact Ledger</h2>
+        <p style="color: var(--text-muted);">A record of your kindness.</p>
     </div>
-  </div>
-</div>
 
+    <div id="historyContainer" data-aos="fade-up" data-aos-delay="200">
+        <p style="text-align:center; grid-column: 1/-1;">Loading records...</p>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+
+        /* SMART COLORING SCRIPT 
+           Since app.js creates the HTML, we watch the container.
+           When a new card is added, we check the text inside <b> tag.
+           If it says "Success", we make it Green.
+        */
+        const container = document.getElementById('historyContainer');
+        
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length) {
+                    // Find all badges that haven't been styled yet
+                    const badges = container.querySelectorAll('b');
+                    
+                    badges.forEach(badge => {
+                        const status = badge.innerText.toLowerCase().trim();
+                        const card = badge.closest('.card'); // Get the parent card
+
+                        if (status === 'success') {
+                            badge.style.background = '#dcfce7'; // Soft Green
+                            badge.style.color = '#166534';      // Dark Green
+                            card.style.borderLeft = '6px solid #166534'; // Green Side Bar
+                        } else if (status === 'failed') {
+                            badge.style.background = '#fee2e2'; // Soft Red
+                            badge.style.color = '#991b1b';      // Dark Red
+                            card.style.borderLeft = '6px solid #991b1b'; // Red Side Bar
+                        } else {
+                            badge.style.background = '#fef3c7'; // Soft Yellow
+                            badge.style.color = '#92400e';      // Dark Orange
+                            card.style.borderLeft = '6px solid #f59e0b'; // Orange Side Bar
+                        }
+                    });
+                }
+            });
+        });
+
+        // Start watching for the JS data to load
+        observer.observe(container, { childList: true });
+    </script>
 </body>
 </html>
