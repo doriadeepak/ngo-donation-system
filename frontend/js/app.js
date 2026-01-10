@@ -56,25 +56,29 @@ async function loginUser() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
+    
     const data = await res.json();
-    if(res.ok) {
+
+    // Defensive Check: Ensure res is ok AND data.user exists
+    if(res.ok && data.user) { 
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.user.role);
-      localStorage.setItem("name", data.user.name); // Store name for welcome message
+      localStorage.setItem("name", data.user.name);
       
       showToast("Login Successful!");
       
-      // Redirect based on role
       setTimeout(() => {
+          // Redirecting based on verified role
           if(data.user.role === 'admin') window.location.href = "admin-dashboard.html";
           else window.location.href = "user-dashboard.html";
       }, 1000);
     } else {
-      showToast(data.message);
+      // If backend sends an error message, show it
+      showToast(data.message || "Invalid email or password");
     }
   } catch(err) {
-    console.error(err);
-    showToast("Login failed");
+    console.error("Login Error:", err);
+    showToast("Server error. Please try again later.");
   }
 }
 
@@ -222,27 +226,60 @@ async function loadAdminStats() {
         const data = await res.json();
         
         if(res.ok) {
-            document.getElementById("totalUsers").innerText = data.totalUsers;
-            document.getElementById("totalDonations").innerText = data.totalDonations;
-            document.getElementById("totalAmount").innerText = "₹" + data.totalAmount;
+            // Updating the <h3> tags in your admin-dashboard.html
+            document.getElementById("totalUsers").innerText = data.totalUsers || 0;
+            document.getElementById("totalDonations").innerText = data.totalDonations || 0;
+            document.getElementById("totalAmount").innerText = "₹" + (data.totalAmount || 0);
         }
     } catch(err) {
-        console.error(err);
+        console.error("Failed to load admin stats:", err);
     }
 }
 
 // ADMIN: LOAD CHARTS
 async function loadAdminCharts() {
-    // Placeholder logic - you would fetch real data here or pass data from loadAdminStats
-    // For now, we render static charts or init empty ones
-    // Check if Chart.js is loaded
-    if(typeof Chart === 'undefined') return;
+    try {
+        const res = await fetch(API_BASE + "/api/admin/stats", {
+            headers: { "Authorization": localStorage.getItem("token") }
+        });
+        const data = await res.json();
+        
+        if(!res.ok) return;
 
-    // We need to fetch data first ideally, but here is the setup
-    const ctx1 = document.getElementById('statusChart');
-    const ctx2 = document.getElementById('amountChart');
-    
-    // You can populate these with real data later
+        // 1. Success Rate Chart (Doughnut)
+        new Chart(document.getElementById('statusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Success', 'Pending', 'Failed'],
+                datasets: [{
+                    data: [data.successCount || 0, data.pendingCount || 0, data.failedCount || 0],
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                    borderWidth: 0
+                }]
+            },
+            options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // 2. Revenue Chart (Simple Bar)
+        new Chart(document.getElementById('amountChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Total Revenue'],
+                datasets: [{
+                    label: 'Amount in ₹',
+                    data: [data.totalAmount || 0],
+                    backgroundColor: '#4A6741',
+                    borderRadius: 10
+                }]
+            },
+            options: { 
+                scales: { y: { beginAtZero: true } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    } catch(err) {
+        console.error("Chart Error:", err);
+    }
 }
 
 // ADMIN: LOAD USERS
@@ -320,4 +357,27 @@ function exportUsersToCSV() {
         document.body.removeChild(link);
     })
     .catch(err => showToast("Export Failed"));
+}
+
+// ADMIN: LOAD REPORT
+async function loadAdminReports() {
+    try {
+        const res = await fetch(API_BASE + "/api/admin/stats", {
+            headers: { "Authorization": localStorage.getItem("token") }
+        });
+        const data = await res.json();
+        
+        if(res.ok) {
+            // Mapping data to the Audit Report IDs
+            document.getElementById("rUsers").innerText = data.totalUsers || 0;
+            document.getElementById("rDonations").innerText = data.totalDonations || 0;
+            document.getElementById("rSuccess").innerText = data.successAmount || 0;
+            document.getElementById("rPending").innerText = data.pendingAmount || 0;
+            document.getElementById("rFailed").innerText = data.failedAmount || 0;
+            document.getElementById("rAmount").innerText = data.totalAmount || 0;
+            document.getElementById("rTime").innerText = new Date().toLocaleString();
+        }
+    } catch(err) {
+        console.error("Report Loading Failed:", err);
+    }
 }
