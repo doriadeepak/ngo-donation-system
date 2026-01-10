@@ -49,4 +49,26 @@ router.get("/my-donations", auth, async (req, res) => {
   }
 });
 
+// MOCK PAYMENT VERIFICATION (Add this!)
+router.post("/verify-mock", async (req, res) => {
+  try {
+    const { donationId } = req.body;
+    
+    // Find the donation and update it to success
+    // Note: Use your specific Mongoose/Model update logic here
+    const donation = await Donation.findByIdAndUpdate(
+      donationId,
+      { status: "success", paymentId: "MOCK_" + Date.now() },
+      { new: true }
+    );
+
+    if (!donation) return res.status(404).json({ message: "Donation not found" });
+
+    res.json({ message: "Simulated Success", donation });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Verification failed" });
+  }
+});
+
 module.exports = router;
