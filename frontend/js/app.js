@@ -1,3 +1,28 @@
+// MASTER API CONFIGURATION
+// Switch this comment if you are testing locally
+const API_BASE = "https://ngo-donation-backend.onrender.com";
+// const API_BASE = "http://localhost:5000";
+
+
+// CUSTOM TOAST NOTIFICATION
+function showToast(message) {
+    const toast = document.getElementById("toast-box");
+    
+    // Safety check: If you forgot to add the HTML div in Step 2, fallback to alert
+    if (!toast) {
+        console.warn("Toast HTML missing, falling back to alert.");
+        return alert(message); 
+    }
+
+    toast.innerText = message;
+    toast.className = "show"; // This triggers the CSS animation
+
+    // Disappear after 3 seconds
+    setTimeout(function(){ 
+        toast.className = toast.className.replace("show", ""); 
+    }, 3000);
+}
+
 // ==========================================
 // 🛡️ SECURITY & AUTHENTICATION
 // ==========================================
@@ -15,7 +40,7 @@ function checkAdminAccess() {
 
   // 2. If logged in but NOT admin -> Kick to Home
   if (role !== "admin") {
-    alert("⛔ Access Denied: Administrators Only.");
+    showToast("⛔ Access Denied: Administrators Only.");
     window.location.replace("index.html");
     return false;
   }
@@ -36,7 +61,7 @@ function logout() {
 // REGISTER
 async function registerUser() {
   try {
-    const res = await fetch("https://ngo-donation-backend.onrender.com/api/auth/register", {
+    const res = await fetch(API_BASE + "/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -47,17 +72,17 @@ async function registerUser() {
     });
 
     const data = await res.json();
-    alert(data.message);
+    showToast(data.message);
     if (res.ok) window.location.href = "login.html";
   } catch (err) {
-    alert("Connection Error. Please try again.");
+    showToast("Connection Error. Please try again.");
   }
 }
 
 // LOGIN
 async function loginUser() {
   try {
-    const res = await fetch("https://ngo-donation-backend.onrender.com/api/auth/login", {
+    const res = await fetch(API_BASE + "/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -79,30 +104,42 @@ async function loginUser() {
         window.location.replace("user-dashboard.html");
       }
     } else {
-      alert(data.message);
+      showToast(data.message);
     }
   } catch (err) {
-    alert("Login failed. Check your internet connection.");
+    showToast("Login failed. Check your internet connection.");
   }
 }
 
 // DONATE
 async function donateMoney() {
-  if (!amount.value) return alert("Please enter an amount.");
+  const inputVal = Number(amount.value); // Convert string to number
 
-  const res = await fetch("https://ngo-donation-backend.onrender.com/api/donation/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": localStorage.getItem("token")
-    },
-    body: JSON.stringify({ amount: amount.value })
-  });
+  // 1. VALIDATION CHECK (New)
+  if (!inputVal || inputVal <= 0) {
+    return showToast("Please enter a valid positive amount (e.g. 500).");
+  }
 
-  const data = await res.json();
-  alert(data.message);
-  // Optional: Reload page to show new donation in history immediately
-  // location.reload(); 
+  try {
+    const res = await fetch(API_BASE + "/api/donation/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
+      },
+      body: JSON.stringify({ amount: inputVal }) // Use the validated number
+    });
+
+    const data = await res.json();
+    showToast(data.message);
+    
+    // Optional: Reload to show new status
+    // location.reload(); 
+
+  } catch (err) {
+    console.error(err);
+    showToast("Donation request failed. Check your connection.");
+  }
 }
 
 // LOAD USER HISTORY
@@ -113,7 +150,7 @@ async function loadDonationHistory() {
     return;
   }
 
-  const res = await fetch("https://ngo-donation-backend.onrender.com/api/donation/my-donations", {
+  const res = await fetch(API_BASE + "/api/donation/my-donations", {
     headers: { "Authorization": token }
   });
 
@@ -153,7 +190,7 @@ async function loadAdminStats() {
   if (!checkAdminAccess()) return;
 
   const token = localStorage.getItem("token");
-  const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/stats", {
+  const res = await fetch(API_BASE + "/api/admin/stats", {
     headers: { "Authorization": token }
   });
 
@@ -170,7 +207,7 @@ async function loadAdminUsers() {
   if (!checkAdminAccess()) return;
 
   const token = localStorage.getItem("token");
-  const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/users", {
+  const res = await fetch(API_BASE + "/api/admin/users", {
     headers: { Authorization: token }
   });
 
@@ -198,7 +235,7 @@ async function loadAdminDonations() {
   if (!checkAdminAccess()) return;
 
   const token = localStorage.getItem("token");
-  const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/donations", {
+  const res = await fetch(API_BASE + "/api/admin/donations", {
     headers: { Authorization: token }
   });
 
@@ -232,8 +269,8 @@ async function loadAdminReports() {
 
   // Parallel Fetch for speed
   const [statsRes, donationsRes] = await Promise.all([
-    fetch("https://ngo-donation-backend.onrender.com/api/admin/stats", { headers: { Authorization: token } }),
-    fetch("https://ngo-donation-backend.onrender.com/api/admin/donations", { headers: { Authorization: token } })
+    fetch(API_BASE + "/api/admin/stats", { headers: { Authorization: token } }),
+    fetch(API_BASE + "/api/admin/donations", { headers: { Authorization: token } })
   ]);
 
   const stats = await statsRes.json();
@@ -265,7 +302,7 @@ async function loadAdminCharts() {
   if (!checkAdminAccess()) return;
   const token = localStorage.getItem("token");
 
-  const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/donations", {
+  const res = await fetch(API_BASE + "/api/admin/donations", {
     headers: { Authorization: token }
   });
   const donations = await res.json();
@@ -312,4 +349,57 @@ async function loadAdminCharts() {
       }
     }
   });
+}
+// ==========================================
+// 📥 DATA EXPORT FUNCTION
+// ==========================================
+
+async function exportUsersToCSV() {
+    // 1. Check Admin Access
+    if (!checkAdminAccess()) return;
+
+    try {
+        const token = localStorage.getItem("token");
+        
+        // 2. Fetch the latest user list
+        const res = await fetch(API_BASE + "/api/admin/users", {
+            headers: { Authorization: token }
+        });
+        
+        const users = await res.json();
+
+        if (!users || users.length === 0) {
+            return showToast("No users to export.");
+        }
+
+        // 3. Define CSV Headers
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "User ID,Name,Email,Role,Joined Date\n"; // Header Row
+
+        // 4. Loop through users and format rows
+        users.forEach(u => {
+            const row = [
+                u._id,
+                u.name, 
+                u.email, 
+                u.role, 
+                new Date(u.createdAt).toLocaleDateString() // Clean Date format
+            ].join(","); // Join columns with commas
+            csvContent += row + "\n"; // Add new line
+        });
+
+        // 5. Create a Download Link & Click it
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "ngo_users_export.csv");
+        document.body.appendChild(link);
+        
+        link.click(); // Auto-click
+        document.body.removeChild(link); // Clean up
+
+    } catch (err) {
+        console.error(err);
+        showToast("Failed to export data.");
+    }
 }

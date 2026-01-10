@@ -340,3 +340,29 @@ footer {
   .auth-form-side { padding: 40px 20px; }
   .back-home { top: 20px; right: 20px; font-size: 0.9rem; }
 }
+/* TOAST NOTIFICATION CONTAINER */
+#toast-box {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    bottom: 30px; /* Appears at bottom center */
+    transform: translateX(-50%);
+    font-size: 17px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.5s, bottom 0.5s;
+}
+
+/* SHOW STATE */
+#toast-box.show {
+    visibility: visible;
+    opacity: 1;
+    bottom: 50px; /* Moves up slightly */
+}
