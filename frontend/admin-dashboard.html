@@ -4,6 +4,19 @@
 <head>
   <title>Admin Dashboard | NGO CARE</title>
   <link rel="stylesheet" href="css/style.css">
+  
+  <script>
+    (function() {
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("role");
+      
+      // If not logged in OR not admin, redirect immediately
+      if (!token || role !== "admin") {
+        window.location.replace("index.html"); 
+      }
+    })();
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="js/app.js"></script>
 </head>
