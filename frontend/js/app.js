@@ -1,3 +1,23 @@
+// SECURITY CHECK (The Bouncer) - Prevents unauthorized access
+function checkAdminAccess() {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  // If not logged in -> Login page
+  if (!token) {
+    window.location.href = "login.html";
+    return false;
+  }
+
+  // If logged in but NOT admin -> Kick to Home
+  if (role !== "admin") {
+    alert("Access Denied: Admins Only!");
+    window.location.href = "index.html"; 
+    return false;
+  }
+  return true;
+}
+
 // REGISTER
 async function registerUser() {
   const res = await fetch("https://ngo-donation-backend.onrender.com/api/auth/register", {
@@ -27,12 +47,18 @@ async function loginUser() {
   });
 
   const data = await res.json();
-  localStorage.setItem("token", data.token);
-
-  if (data.role === "admin") {
-    window.location.href = "admin-dashboard.html";
+  
+  if (data.token) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role); // ADDED: Saves role so we can check it later!
+    
+      if (data.role === "admin") {
+        window.location.href = "admin-dashboard.html";
+      } else {
+        window.location.href = "user-dashboard.html";
+      }
   } else {
-    window.location.href = "user-dashboard.html";
+      alert(data.message);
   }
 }
 
@@ -56,8 +82,10 @@ async function donateMoney() {
 // LOGOUT
 function logout() {
   localStorage.removeItem("token");
+  localStorage.removeItem("role"); // ADDED: Clear role on logout
   window.location.href = "login.html";
 }
+
 // LOAD DONATION HISTORY
 async function loadDonationHistory() {
   const token = localStorage.getItem("token");
@@ -99,10 +127,12 @@ async function loadDonationHistory() {
     container.appendChild(card);
   });
 }
-async function loadAdminStats() {
-  const token = localStorage.getItem("token");
-  if (!token) return;
 
+// ADMIN - STATS
+async function loadAdminStats() {
+  if (!checkAdminAccess()) return; // ADDED: Kicks user out if not admin
+
+  const token = localStorage.getItem("token");
   const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/stats", {
     headers: {
       "Authorization": token
@@ -115,10 +145,12 @@ async function loadAdminStats() {
   document.getElementById("totalDonations").innerText = data.totalDonations;
   document.getElementById("totalAmount").innerText = "₹ " + data.totalAmount;
 }
+
 // ADMIN - LOAD USERS
 async function loadAdminUsers() {
-  const token = localStorage.getItem("token");
+  if (!checkAdminAccess()) return; // ADDED
 
+  const token = localStorage.getItem("token");
   const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/users", {
     headers: { Authorization: token }
   });
@@ -141,8 +173,9 @@ async function loadAdminUsers() {
 
 // ADMIN - LOAD DONATIONS
 async function loadAdminDonations() {
-  const token = localStorage.getItem("token");
+  if (!checkAdminAccess()) return; // ADDED
 
+  const token = localStorage.getItem("token");
   const res = await fetch("https://ngo-donation-backend.onrender.com/api/admin/donations", {
     headers: { Authorization: token }
   });
@@ -168,6 +201,8 @@ async function loadAdminDonations() {
 
 // ADMIN REPORTS (DETAILED)
 async function loadAdminReports() {
+  if (!checkAdminAccess()) return; // ADDED
+
   const token = localStorage.getItem("token");
 
   // Get stats
@@ -204,12 +239,13 @@ async function loadAdminReports() {
   document.getElementById("rPending").innerText = pendingAmount;
   document.getElementById("rFailed").innerText = failedAmount;
 
-  document.getElementById("rTime").innerText =
-    new Date().toLocaleString();
+  document.getElementById("rTime").innerText = new Date().toLocaleString();
 }
 
 // ADMIN CHARTS
 async function loadAdminCharts() {
+  if (!checkAdminAccess()) return; // ADDED
+
   const token = localStorage.getItem("token");
   if (!token) return;
 
