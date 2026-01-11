@@ -126,20 +126,18 @@
 
   <div class="page-header" data-aos="fade-right">
     <div>
-      <h2>Global Ledger</h2>
-      <p style="color: var(--text-muted);">Real-time financial tracking.</p>
+        <h2>Global Ledger</h2>
+        <p style="color: var(--text-muted);">Real-time financial tracking.</p>
     </div>
     <div style="display: flex; gap: 10px;">
-      <button class="btn-primary" onclick="exportDonationsToCSV()"
-        style="background:#4b5563; padding: 10px 20px; border:none; cursor:pointer; font-size: 0.85rem;">
-        Download CSV 📥
-      </button>
-      <button class="btn-primary" onclick="location.reload()"
-        style="padding: 10px 20px; border:none; cursor:pointer; font-size: 0.85rem;">
-        Sync Data ↻
-      </button>
+         <button class="btn-primary" onclick="exportDonationsToCSV()" style="background:#2563eb; padding: 10px 20px; border:none; cursor:pointer; font-size: 0.85rem; color: white;">
+            Export CSV ⬇
+        </button>
+         <button class="btn-primary" onclick="location.reload()" style="padding: 10px 20px; border:none; cursor:pointer; font-size: 0.85rem;">
+            Refresh ↻
+        </button>
     </div>
-  </div>
+</div>
 
   <div id="adminDonations" data-aos="fade-up" data-aos-delay="200">
     <p style="text-align: center; color: #999;">Fetching records...</p>
