@@ -52,14 +52,14 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.json({ 
-  token, 
-  user: { 
-    id: user._id, 
-    role: user.role, 
-    name: user.name 
-  } 
-});
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        role: user.role,
+        name: user.name
+      }
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Login failed" });

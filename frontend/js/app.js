@@ -385,25 +385,3 @@ function exportDonationsToCSV() {
     })
     .catch(err => showToast("Export Error"));
 }
-
-// 2. Ensure loadAdminReports is mapping correctly
-async function loadAdminReports() {
-    try {
-        const res = await fetch(API_BASE + "/api/admin/stats", {
-            headers: { "Authorization": localStorage.getItem("token") }
-        });
-        const data = await res.json();
-        
-        if(res.ok) {
-            document.getElementById("rUsers").innerText = data.totalUsers || 0;
-            document.getElementById("rDonations").innerText = data.totalDonations || 0;
-            document.getElementById("rSuccess").innerText = data.successAmount || 0;
-            document.getElementById("rPending").innerText = data.pendingAmount || 0;
-            document.getElementById("rFailed").innerText = data.failedAmount || 0;
-            document.getElementById("rAmount").innerText = data.totalAmount || 0;
-            document.getElementById("rTime").innerText = new Date().toLocaleString();
-        }
-    } catch(err) {
-        console.error("Report Load Error", err);
-    }
-}
