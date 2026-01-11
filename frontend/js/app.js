@@ -1,6 +1,6 @@
 // MASTER API CONFIGURATION
-const API_BASE = "https://ngo-donation-backend.onrender.com";
-// const API_BASE = "http://localhost:5000"; 
+// const API_BASE = "https://ngo-donation-backend.onrender.com";
+const API_BASE = "http://localhost:5000"; 
 
 // --- UTILS ---
 // CUSTOM TOAST NOTIFICATION
@@ -357,5 +357,53 @@ async function loadAdminReports() {
         }
     } catch(err) {
         console.error("Report Loading Failed:", err);
+    }
+}
+
+// --- ADMIN EXPORT FUNCTIONS ---
+
+// 1. Export Donations to CSV
+function exportDonationsToCSV() {
+    fetch(API_BASE + "/api/admin/donations", {
+        headers: { "Authorization": localStorage.getItem("token") }
+    })
+    .then(res => res.json())
+    .then(donations => {
+        if(!donations || donations.length === 0) return showToast("No donation records found.");
+        
+        const csvContent = "data:text/csv;charset=utf-8," 
+            + "ID,User_ID,Amount,Status,Date\n"
+            + donations.map(d => `${d._id},${d.user},${d.amount},${d.status},${new Date(d.createdAt).toLocaleDateString()}`).join("\n");
+            
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "Global_Ledger_Export.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    })
+    .catch(err => showToast("Export Error"));
+}
+
+// 2. Ensure loadAdminReports is mapping correctly
+async function loadAdminReports() {
+    try {
+        const res = await fetch(API_BASE + "/api/admin/stats", {
+            headers: { "Authorization": localStorage.getItem("token") }
+        });
+        const data = await res.json();
+        
+        if(res.ok) {
+            document.getElementById("rUsers").innerText = data.totalUsers || 0;
+            document.getElementById("rDonations").innerText = data.totalDonations || 0;
+            document.getElementById("rSuccess").innerText = data.successAmount || 0;
+            document.getElementById("rPending").innerText = data.pendingAmount || 0;
+            document.getElementById("rFailed").innerText = data.failedAmount || 0;
+            document.getElementById("rAmount").innerText = data.totalAmount || 0;
+            document.getElementById("rTime").innerText = new Date().toLocaleString();
+        }
+    } catch(err) {
+        console.error("Report Load Error", err);
     }
 }
