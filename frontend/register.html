@@ -3,45 +3,183 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register | NGO CARE</title>
+  <title>Join Us | Light Their Tomorrow</title>
   
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="C:\Users\deepak\OneDrive\Desktop\NGO-Donation-System\frontend\css\globals.css" />
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="icon" href="data:,">
+  
+  <style>
+    :root {
+      --emerald: #043f2d; /* */
+      --lime: #c1e965;    /* */
+      --white: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--white);
+      font-family: "Montserrat-Medium", Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Split Screen Layout matching your landing page's geometric feel */
+    .register-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Left Side: Visual Branding */
+    .brand-side {
+      flex: 1;
+      background-color: var(--emerald);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px;
+      color: #ffffff;
+      position: relative;
+    }
+
+    /* Geometric Overlay similar to .rectangle-11 */
+    .brand-side::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: url('https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80');
+      background-size: cover;
+      opacity: 0.15;
+      mix-blend-mode: luminosity;
+    }
+
+    .brand-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-content h2 {
+      font-family: "Georgia-Bold", serif; /* */
+      font-size: 3.5rem;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    /* Form Side */
+    .form-side {
+      flex: 1;
+      background-color: rgba(153, 197, 89, 0.1); /* Matching .div opacity */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .form-wrapper {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .form-header h1 {
+      font-family: "Georgia-Bold", serif;
+      color: var(--emerald);
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .input-group { margin-bottom: 20px; }
+
+    .input-group label {
+      display: block;
+      color: var(--emerald);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid rgba(4, 63, 45, 0.1);
+      border-radius: 15px; /* Softer edges matching your rectangles */
+      background: var(--white);
+      font-size: 1rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .input-field:focus {
+      border-color: var(--lime);
+      box-shadow: 0 0 15px rgba(193, 233, 101, 0.3);
+    }
+
+    /* Matching .rectangle-3 / .text-wrapper-4 */
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      background-color: #000000;
+      color: var(--white);
+      border: none;
+      border-radius: 37px;
+      font-family: "Montserrat-SemiBold", sans-serif;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+      background-color: var(--emerald);
+      transform: translateY(-2px);
+    }
+
+    .back-home {
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      text-decoration: none;
+      color: var(--emerald);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 900px) {
+      .register-container { flex-direction: column; }
+      .brand-side { padding: 40px; min-height: 300px; }
+    }
+  </style>
   
   <script src="js/app.js"></script> 
 </head>
 <body>
 
-<div class="auth-container">
+<div class="register-container">
   
-  <div class="auth-image" style="background-image: url('https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=2070&auto=format&fit=crop');">
-    <div class="auth-quote" data-aos="fade-up">
-      <h2>"Alone we can do so little; together we can do so much."</h2>
-      <p style="opacity: 0.8;">- Helen Keller</p>
+  <div class="brand-side">
+    <div class="brand-content" data-aos="fade-right">
+      <div style="font-family: 'Anton SC-Regular'; font-size: 24px; margin-bottom: 40px;">NGO</div>
+      <h2>Light Their<br>Tomorrow.</h2>
+      <p style="font-size: 1.2rem; opacity: 0.9;">Join 10,000+ people who help children continue their education with dignity.</p>
     </div>
   </div>
 
-  <div class="auth-form-side">
-    
-    <a href="index.html" class="back-home">
-      <span>&larr;</span> Back to Home
-    </a>
+  <div class="form-side">
+    <a href="index.html" class="back-home">BACK TO HOME</a>
 
-    <div class="form-wrapper" data-aos="fade-left" data-aos-duration="1000">
-      <div style="margin-bottom: 30px;">
-        <h2 style="font-size: 2.5rem; margin-bottom: 10px;">Start Your Journey</h2>
-        <p style="color: var(--text-muted);">Join our community of 10,000+ changemakers.</p>
+    <div class="form-wrapper" data-aos="fade-up">
+      <div class="form-header">
+        <h1>Register</h1>
+        <p style="color: #666; margin-bottom: 30px;">Create your account to start donating.</p>
       </div>
 
       <div class="input-group">
         <label>Full Name</label>
-        <input id="rname" type="text" class="input-field" placeholder="John Doe">
+        <input id="rname" type="text" class="input-field" placeholder="Deepak Kumar">
       </div>
 
       <div class="input-group">
         <label>Email Address</label>
-        <input id="remail" type="email" class="input-field" placeholder="hello@example.com">
+        <input id="remail" type="email" class="input-field" placeholder="deepak@example.com">
       </div>
 
       <div class="input-group">
@@ -49,23 +187,20 @@
         <input id="rpassword" type="password" class="input-field" placeholder="••••••••">
       </div>
 
-      <button class="btn-primary" onclick="registerUser()" style="width: 100%; border: none; cursor: pointer; border-radius: 12px; margin-top: 10px;">
+      <button class="submit-btn" onclick="registerUser()">
         Create Account
       </button>
 
-      <p style="margin-top: 25px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+      <p style="margin-top: 25px; text-align: center; font-size: 0.9rem;">
         Already a member? 
-        <a href="login.html" style="color: var(--accent); font-weight: 700; text-decoration: none;">Login here</a>
+        <a href="login.html" style="color: var(--emerald); font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--lime);">Login here</a>
       </p>
     </div>
-
   </div>
 </div>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-  AOS.init();
-</script>
+<script>AOS.init({ duration: 1000, once: true });</script>
 <div id="toast-box"></div>
 
 </body>

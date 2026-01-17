@@ -2,116 +2,60 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Make a Donation | NGO CARE</title>
-    
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="C:\Users\deepak\OneDrive\Desktop\NGO-Donation-System\frontend\css\globals.css" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="icon" href="data:,">
     <script src="js/app.js"></script>
+    <style>
+        :root { --emerald: #043f2d; --lime: #c1e965; }
+        body { background-color: #f7f7f7; font-family: "Montserrat-Medium"; }
+        .donate-section { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--emerald); position: relative; overflow: hidden; }
+        .donate-card { background: white; padding: 50px; border-radius: 30px; width: 100%; max-width: 450px; position: relative; z-index: 10; border-top: 10px solid var(--lime); text-align: center; }
+        .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 30px 0; }
+        .preset-btn { padding: 12px; border: 2px solid #eee; background: none; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .preset-btn.active, .preset-btn:hover { border-color: var(--emerald); background: #f0fdf4; }
+        .money-input-group { position: relative; margin-bottom: 30px; }
+        #amount { width: 100%; padding: 20px; font-size: 2rem; font-weight: bold; border: 2px solid #eee; border-radius: 15px; text-align: center; outline: none; }
+        #amount:focus { border-color: var(--lime); }
+        .btn-pay { background: #000; color: white; padding: 20px; border-radius: 37px; width: 100%; border: none; font-size: 1.2rem; cursor: pointer; font-family: "Montserrat-SemiBold"; }
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center; }
+        .modal-box { background: white; padding: 30px; border-radius: 20px; width: 350px; }
+    </style>
 </head>
 <body>
-
-    <nav class="navbar" style="position: absolute;">
-        <div class="logo">NGO CARE.</div>
-        <div class="nav-links">
-            <a href="user-dashboard.html" class="back-link">&larr; Dashboard</a>
-        </div>
-    </nav>
-
     <div class="donate-section">
-        
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-
-        <div class="particles-container">
-            <div class="particle p-1"></div> <div class="particle p-2 p-ring"></div> <div class="particle p-3"></div> <div class="particle p-4 p-cross"></div> <div class="particle p-5"></div> <div class="particle p-6 p-ring"></div> <div class="particle p-7 p-cross"></div> <div class="particle p-8"></div>
-            <div class="particle p-9 p-ring"></div>
-            <div class="particle p-10"></div>
-            <div class="particle p-11 p-cross"></div>
-            <div class="particle p-cross p-static-1"></div>
-            <div class="particle p-ring p-static-2"></div>
-        </div>
-
-        <div class="float-badge badge-1">
-            <span>❤️</span> 120 Donors today
-        </div>
-        <div class="float-badge badge-2">
-            <span>🧾</span> Tax Benefit Available
-        </div>
-
-        <div class="donate-card" data-aos="zoom-in" data-aos-duration="800">
-            <h2 style="margin-bottom: 10px;">Make a Difference</h2>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">
-                Your support changes lives immediately.
-            </p>
-
+        <div class="donate-card" data-aos="zoom-in">
+            <h2 style="font-family: 'Georgia-Bold'; color: var(--emerald); font-size: 2rem;">Make an Impact</h2>
             <div class="preset-grid">
-                <button class="preset-btn" onclick="setAmount(100)">₹100</button>
                 <button class="preset-btn" onclick="setAmount(500)">₹500</button>
                 <button class="preset-btn" onclick="setAmount(1000)">₹1000</button>
+                <button class="preset-btn" onclick="setAmount(5000)">₹5000</button>
             </div>
-
             <div class="money-input-group">
-                <span class="currency-symbol">₹</span>
-                <input id="amount" type="number" placeholder="0">
+                <input id="amount" type="number" placeholder="Enter Amount">
             </div>
-
-            <button class="btn-primary" onclick="donateMoney()" style="width: 100%; border: none; cursor: pointer;">
-                Proceed to Pay
-            </button>
-
-            <div class="secure-badge">
-                <span>🔒</span> SSL Encrypted & Secure
-            </div>
+            <button class="btn-pay" onclick="donateMoney()">Proceed to Pay</button>
+            <p style="margin-top: 20px; font-size: 0.8rem; color: #888;">🔒 Secured with 256-bit SSL Encryption</p>
         </div>
     </div>
 
     <div id="payment-modal" class="modal-overlay">
         <div class="modal-box">
-            <div class="modal-header">
-                <h3>🔒 Secure Payment Gateway</h3>
-                <button onclick="closeModal()">×</button>
+            <h3 style="margin-bottom: 20px; text-align: center;">Secure Payment</h3>
+            <input type="text" placeholder="Card Number" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <input type="text" placeholder="MM/YY" style="width:50%; padding:12px; border:1px solid #ddd; border-radius:8px;">
+                <input type="password" placeholder="CVV" style="width:50%; padding:12px; border:1px solid #ddd; border-radius:8px;">
             </div>
-            <div class="modal-body">
-                <p style="margin-bottom: 20px; font-size: 14px; color: #555;">Total Payable: <strong id="pay-display" style="font-size: 18px; color: #333;">₹0</strong></p>
-                
-                <div class="input-group-modal">
-                    <label>Card Number</label>
-                    <input type="text" placeholder="4242 4242 4242 4242" maxlength="19">
-                </div>
-                
-                <div class="input-row">
-                    <div class="input-group-modal">
-                        <label>Expiry</label>
-                        <input type="text" placeholder="MM/YY" maxlength="5">
-                    </div>
-                    <div class="input-group-modal">
-                        <label>CVV</label>
-                        <input type="password" placeholder="123" maxlength="3">
-                    </div>
-                </div>
-
-                <button id="pay-btn" onclick="processMockPayment()">Pay Now</button>
-                
-                <p class="secure-text">
-                    <span style="color: #2ecc71;">✔</span> Verified by Visa Secure<br>
-                    This is a secure 256-bit SSL encrypted simulation.
-                </p>
-            </div>
+            <button onclick="processMockPayment()" style="width:100%; background:var(--emerald); color:white; padding:15px; border:none; border-radius:37px; cursor:pointer; font-weight:bold;">Pay Now</button>
+            <button onclick="closeModal()" style="width:100%; background:none; border:none; margin-top:10px; color:#666; cursor:pointer;">Cancel</button>
         </div>
     </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init();
-        function setAmount(value) {
-            document.getElementById('amount').value = value;
-            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
+        function setAmount(v) { document.getElementById('amount').value = v; }
     </script>
-    <div id="toast-box"></div>
-
 </body>
 </html>

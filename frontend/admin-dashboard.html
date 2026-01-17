@@ -1,62 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | NGO CARE</title>
-    
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="C:\Users\deepak\OneDrive\Desktop\NGO-Donation-System\frontend\css\globals.css" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="icon" href="data:,">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <script>
-      (function() {
-        const token = localStorage.getItem("token");
-        const role = localStorage.getItem("role");
-        if (!token || role !== "admin") {
-          // If not admin, kick them out
-          window.location.replace("index.html");
-        }
-      })();
+        (function () {
+            const token = localStorage.getItem("token");
+            const role = localStorage.getItem("role");
+            if (!token || role !== "admin") { window.location.replace("index.html"); }
+        })();
     </script>
-    
     <script src="js/app.js"></script>
-
     <style>
-        /* DASHBOARD SPECIFIC STYLES */
-        body {
-            background-color: #FDFBF7;
-            /* Technical grid background */
-            background-image: linear-gradient(#e5e5f7 1px, transparent 1px), linear-gradient(90deg, #e5e5f7 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-position: -1px -1px;
+        :root {
+            --emerald: #043f2d;
+            --lime: #c1e965;
         }
-        
-        /* Layout Container */
+
+        body {
+            background-color: #ffffff;
+            background-image: linear-gradient(rgba(193, 233, 101, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(193, 233, 101, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
         .admin-container {
             max-width: 1200px;
             margin: 100px auto 50px;
             padding: 0 20px;
         }
 
-        /* Header Section */
         .admin-header {
             margin-bottom: 40px;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            border-bottom: 2px solid rgba(0,0,0,0.05);
-            padding-bottom: 20px;
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(5px);
+            border-bottom: 4px solid var(--lime);
             padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
         }
 
-        /* STATS WIDGETS */
+        .admin-header h1 {
+            font-family: "Georgia-Bold";
+            color: var(--emerald);
+            margin: 0;
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -68,56 +63,32 @@
             background: white;
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border-left: 6px solid #ccc; /* Default Border */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-left: 8px solid #ccc;
             transition: 0.3s;
             position: relative;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(74, 103, 65, 0.1);
         }
 
         .stat-card h3 {
             font-size: 3rem;
-            margin-bottom: 5px;
-            color: var(--text-dark);
-            font-family: 'Lato', sans-serif;
-            font-weight: 700;
-            line-height: 1;
+            margin: 0;
+            color: var(--emerald);
+            font-family: "Montserrat-Bold";
         }
 
-        .stat-card p {
-            color: var(--text-muted);
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
+        .stat-users {
+            border-left-color: var(--emerald);
         }
 
-        /* Watermark Icons inside cards */
-        .stat-icon-bg {
-            position: absolute;
-            right: -10px;
-            bottom: -20px;
-            font-size: 7rem;
-            opacity: 0.05;
-            color: black;
-            transform: rotate(-15deg);
-            pointer-events: none;
+        .stat-donations {
+            border-left-color: #000000;
         }
 
-        /* Specific Colors for Widgets */
-        .stat-users { border-left-color: #3b82f6; } /* Blue */
-        .stat-donations { border-left-color: #ef4444; } /* Red */
-        .stat-money { border-left-color: #10b981; } /* Green */
+        .stat-money {
+            border-left-color: var(--lime);
+        }
 
-        /* CHARTS SECTION */
         .charts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -129,22 +100,9 @@
             background: white;
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            position: relative;
-        }
-        
-        .chart-card h4 {
-            margin-bottom: 20px;
-            text-align: center;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
-        /* QUICK ACTIONS DOCK */
-        .actions-section h4 { margin-bottom: 20px; margin-left: 10px; }
-        
         .actions-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -157,10 +115,10 @@
             border-radius: 15px;
             text-align: center;
             text-decoration: none;
-            color: var(--text-dark);
+            color: var(--emerald);
             font-weight: 700;
             border: 2px solid transparent;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
             transition: 0.3s;
             display: flex;
             align-items: center;
@@ -169,89 +127,79 @@
         }
 
         .action-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
+            border-color: var(--lime);
+            background: var(--emerald);
+            color: white;
             transform: translateY(-3px);
-            background: #fffbf7;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 5%;
+            background: var(--emerald);
+            color: white;
+        }
+
+        .logo-tag {
+            font-size: 10px;
+            background: var(--lime);
+            color: var(--emerald);
+            padding: 4px 8px;
+            border-radius: 50px;
+            margin-left: 5px;
+            font-weight: bold;
         }
     </style>
 </head>
-<body onload="loadAdminStats(); loadAdminCharts();">
 
+<body onload="loadAdminStats(); loadAdminCharts();">
     <nav class="navbar" data-aos="fade-down">
-        <div class="logo">NGO CARE <span style="font-size: 10px; background: var(--text-dark); color: white; padding: 4px 8px; border-radius: 50px; vertical-align: middle; margin-left: 5px;">ADMIN</span></div>
+        <div style="font-family: 'Anton SC-Regular'; font-size: 24px;">NGO <span class="logo-tag">ADMIN</span></div>
         <div class="nav-links">
-            <a href="index.html" target="_blank">View Live Site</a>
-            <a href="#" onclick="logout()" style="color: #ef4444;">Logout</a>
+            <a href="index.html" style="color: white; text-decoration: none; margin-right: 20px;">View Site</a>
+            <a href="#" onclick="logout()"
+                style="color: var(--lime); text-decoration: none; font-weight: bold;">Logout</a>
         </div>
     </nav>
-
     <div class="admin-container">
-        
         <div class="admin-header" data-aos="fade-right">
             <div>
                 <h1>System Overview</h1>
-                <p style="color: var(--text-muted);">Welcome back, Admin.</p>
+                <p style="color: #666;">Welcome back, Administrator.</p>
             </div>
-            <div style="text-align: right;">
-                <div style="display:inline-block; width:10px; height:10px; background:#10b981; border-radius:50%; margin-right:5px;"></div>
-                <span style="font-size: 0.9rem; font-weight: 700; color: #10b981;">System Online</span>
-            </div>
+            <div style="text-align: right;"><span style="font-weight: 700; color: #10b981;">● System Online</span></div>
         </div>
-
         <div class="stats-grid">
-            
             <div class="stat-card stat-users" data-aos="fade-up" data-aos-delay="100">
                 <h3 id="totalUsers">0</h3>
-                <p>Total Users</p>
-                <div class="stat-icon-bg">👥</div>
+                <p>TOTAL USERS</p>
             </div>
-
             <div class="stat-card stat-donations" data-aos="fade-up" data-aos-delay="200">
                 <h3 id="totalDonations">0</h3>
-                <p>Total Transactions</p>
-                <div class="stat-icon-bg">❤️</div>
+                <p>TRANSACTIONS</p>
             </div>
-
             <div class="stat-card stat-money" data-aos="fade-up" data-aos-delay="300">
                 <h3 id="totalAmount">₹0</h3>
-                <p>Total Revenue</p>
-                <div class="stat-icon-bg">💰</div>
+                <p>REVENUE</p>
             </div>
         </div>
-
         <div class="charts-grid">
-            <div class="chart-card" data-aos="zoom-in">
-                <h4>Donation Success Rate</h4>
-                <canvas id="statusChart"></canvas>
-            </div>
-            <div class="chart-card" data-aos="zoom-in" data-aos-delay="200">
-                <h4>Revenue Breakdown</h4>
-                <canvas id="amountChart"></canvas>
-            </div>
+            <div class="chart-card"><canvas id="statusChart"></canvas></div>
+            <div class="chart-card"><canvas id="amountChart"></canvas></div>
         </div>
-
-        <div class="actions-section" data-aos="fade-up">
-            <h4>Management Console</h4>
+        <div class="actions-section">
+            <h4 style="font-family: 'Georgia-Bold'; color: var(--emerald); margin-bottom: 20px;">Management Console</h4>
             <div class="actions-grid">
-                <a href="admin-users.html" class="action-btn">
-                    <span>👥</span> Manage Users
-                </a>
-                <a href="admin-donations.html" class="action-btn">
-                    <span>💳</span> All Donations
-                </a>
-                <a href="admin-reports.html" class="action-btn">
-                    <span>📊</span> View Reports
-                </a>
+                <a href="admin-users.html" class="action-btn">Users</a>
+                <a href="admin-donations.html" class="action-btn">Donations</a>
+                <a href="admin-reports.html" class="action-btn">Reports</a>
             </div>
         </div>
-
     </div>
-
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init();
-    </script>
+    <script>AOS.init();</script>
     <div id="toast-box"></div>
 </body>
+
 </html>
